@@ -1,15 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="stylesheet" href="/styles/main.css">
     <script src="/src/main.js"></script>
   </head>
   <body>
+    <header>
+      <h1>Binary Calculator</h1>
+    </header>
     <main id="app">
-      <p>HI</p>
+      <section class="option-buttons" aria-label="Options">
+        <button type="button">Calculate</button>
+        <button type="button">Convert</button>
+      </section>
+      <section class="calculator" aria-label="Calculator">
+        <div class="operation-container">
+          <div>
+            <select name="operation" id="operation-selector">
+              <option value="+">+</option>
+              <option value="-">-</option>
+            </select>
+          </div>
+          <div class="operands-container">
+            <input class="operand" type="text">
+            <input class="operand" type="text">
+          </div>
+        </div>
+        <div class="result-container">
+          <p class="result">010101010101</p>
+        </div>
+      </section>
+      <section class="converter" aria-label="converter">
+        <div class="conversion-panel">
+          <select name="base-left">
+            <option value="binary">Binary</option>
+            <option value="decimal">Decimal</option>
+            <option value="hex">Hexadecimal</option>
+          </select>
+          <input type="text">
+        </div>
+        <p>=</p>
+        <div class="conversion-panel">
+          <select name="base-right">
+            <option value="decimal">Decimal</option>
+            <option value="hex">Hexadecimal</option>
+            <option value="binary">Binary</option>
+          </select>
+          <input type="text">
+        </div>
+      </section>
     </main>
   </body>
 </html>
