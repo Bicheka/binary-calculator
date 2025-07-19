@@ -5,17 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/styles/main.css">
-    <script src="/src/main.js"></script>
+    <script src="/src/main.js" defer></script>
   </head>
   <body>
     <header>
       <h1>Binary Calculator</h1>
     </header>
     <main id="app">
-      <section class="option-buttons" aria-label="Options">
-        <button type="button">Calculate</button>
-        <button type="button">Convert</button>
-      </section>
       <section class="calculator" aria-label="Calculator">
         <div class="operation-container">
           <div>
@@ -25,12 +21,12 @@
             </select>
           </div>
           <div class="operands-container">
-            <input class="operand" type="text">
-            <input class="operand" type="text">
+            <input class="operand" id="first-operand" type="text" placeholder="010101" autocomplete="off">
+            <input class="operand" id="second-operand" type="text" placeholder="010101" autocomplete="off">
           </div>
         </div>
         <div class="result-container">
-          <p class="result">010101010101</p>
+          <p class="result" id="calculation-result">0</p>
         </div>
       </section>
       <section class="converter" aria-label="converter">

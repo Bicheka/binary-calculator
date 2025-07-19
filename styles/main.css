@@ -5,8 +5,8 @@
 }
 body {
     font-family: sans-serif;
-    background-color: black;
-    color: #fff;
+    background-color: #202020;
+    color: whitesmoke;
 }
 main{
     max-width: 50%;
@@ -18,27 +18,21 @@ input, select{
     border: none;
     padding: 5px;
 }
+input{
+    text-align: end;
+    background: none;
+    border: 1px solid gray;
+    color: whitesmoke;
+}
 select{
-    background-color: darkgray;
+    background: none;
+    color: whitesmoke;
 }
 
-.option-buttons{
-    display: flex;
-}
-.option-buttons button{
-    border: none;
-    padding: 3px 5px;
-    font-size: 1.25rem;
-}
-.option-buttons button:nth-child(1){
-    border-top-left-radius: 5px;
-}
-.option-buttons button:nth-last-child(1){
-    border-top-right-radius: 5px;
-}
 .calculator{
     border: 1px solid white;
     padding: 20px;
+    margin-bottom: 50px;
 }
 .operation-container{
     display: flex;
@@ -56,35 +50,41 @@ select{
 .result-container{
     display: flex;
     align-items: center;
+    justify-content: right;
+    padding-left: 2em;
+    color: black;
+    width: 100%;
+    height: 2rem;
+    border: 1px solid gray;
+    position: relative;
 }
-
-.equals{
-    padding: .5rem;
+.result-container::before{
+    content: '=';
+    position: absolute;
+    left: .5em;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+    color: whitesmoke;
+    
 }
 
 .result{
-    padding: 0 .5rem;
-    background-color: whitesmoke;
-    color: black;
-    border-radius: 2px;
-    width: 100%;
     text-align: right;
-    position: relative;
-}
+    color: whitesmoke;
+    overflow: auto;
+    scrollbar-width: thin;
+    height: 100%;
+    display: flex;
+    align-items: center;
 
-.result::before{
-    content: "=";
-    position: absolute;
-    left: 1rem;
-    bottom: 2px;
 }
-
 
 /* Coverter */
 .converter{
     display: flex;
-    align-items: center; /* Vertically align items in the flex row */
-    gap: 1rem; /* Optional: space between elements */
+    align-items: center;
+    gap: 1rem;
     padding: 50px 0;
     border: 1px solid white;
     justify-content: center;
