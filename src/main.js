@@ -42,7 +42,6 @@ function addBinary(operand1, operand2) {
     while (i >= 0 || j >= 0 || carry) {
         const bitA = i >= 0 ? +operand1[i--] : 0;
         const bitB = j >= 0 ? +operand2[j--] : 0;
-
         const sum = bitA + bitB + carry;
         result = (sum % 2) + result;
         carry = sum > 1 ? 1 : 0;
@@ -52,7 +51,86 @@ function addBinary(operand1, operand2) {
 }
 
 function subtractBinary(operand1, operand2) {
-    return 'Work in Progress'
+    let carry = 0;
+    let result = '';
+    let is_negative = false;
+
+    if(operand1 === operand2) return result = '0';
+
+    // invert operand values if operand1 is less than operand2
+    if(!isBinaryGreater(operand1, operand2)){
+        [operand1, operand2] = swapValues(operand1, operand2);
+        is_negative = true;
+    }
+
+    let i = operand1.length - 1;
+    let j = operand2.length - 1;
+    
+    while (i >= 0 || j >= 0 || carry) {
+        const bitA = i >= 0 ? +operand1[i] : 0;
+        const bitB = j >= 0 ? +operand2[j] : 0;
+        let sub;
+        if(bitA > bitB){
+            if(carry === 1) {
+                sub = 0;
+                carry = 0;
+            }
+            else{
+                sub = 1;
+            }
+        }
+        else if (bitA < bitB){
+            if(carry === 1){
+                sub = 0;
+            }
+            else{
+                sub = 1;
+                carry = 1;
+            }
+        }
+        else{
+            if(carry === 1){
+                sub = 1;
+            }
+            else sub = 0;
+        }
+        result = sub + result;
+
+        i--;
+        j--;
+    }
+    result = result.replace(/^0+/, '') || '0';
+    if(is_negative){
+        result = '-' + result;
+    }
+    return result;
+}
+
+function isBinaryGreater(a, b) {
+    // Remove leading zeros
+    a = a.replace(/^0+/, '') || '0';
+    b = b.replace(/^0+/, '') || '0';
+
+    // Compare lengths
+    if (a.length > b.length) return true;
+    if (a.length < b.length) return false;
+
+    // Compare bit by bit
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) {
+        return a[i] === '1'; // '1' > '0'
+        }
+    }
+
+    // They are equal
+    return false;
+}
+
+function swapValues(x, y){
+    let t = x;
+    x = y;
+    y = t;
+    return [x, y];
 }
 
 document.getElementById('operation-selector').addEventListener('change', calculateBinary);
