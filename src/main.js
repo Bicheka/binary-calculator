@@ -161,7 +161,16 @@ class BaseConverter {
         this.rightBase.value = temp;
         this.leftBaseValue = this.leftBase.value;
         this.rightBaseValue = this.rightBase.value;
+        
+        //swap input values
+        const leftInput = document.getElementById('input-left');
+        const rightInput = document.getElementById('input-right');
+
+        temp = leftInput.value;
+        leftInput.value = rightInput.value;
+        rightInput.value = temp;
     }
+
     updateValues(base, value){
         if(base === 'left'){
             this.leftBaseValue = value;
@@ -184,6 +193,9 @@ function swapBaseOnEquals(){
         }
         else{
             converter.updateValues('left', baseLeft.value);
+
+            const leftInput = document.getElementById('input-left');
+            leftInput.value = '';
         }
     });
     baseRight.addEventListener('change', () => {
@@ -192,8 +204,10 @@ function swapBaseOnEquals(){
         }
         else{
             converter.updateValues('right', baseRight.value);
+            
+            const rightInput = document.getElementById('input-right');
+            rightInput.value = '';
         }
     });
-
 }
 swapBaseOnEquals();
