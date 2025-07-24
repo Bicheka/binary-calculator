@@ -164,6 +164,9 @@ class BaseConverter {
             if(this.leftBaseValue === 'binary' & this.rightBaseValue === 'decimal'){
                 rightInput.value = this.binaryToDecimal();
             }
+            else if(this.leftBaseValue === 'binary' & this.rightBaseValue === 'hex'){
+                rightInput.value = this.binaryToHex();
+            }
             else if(this.leftBaseValue === 'decimal' & this.rightBaseValue === 'binary'){
                 rightInput.value = this.decimalToBinary();
             }
@@ -215,7 +218,53 @@ class BaseConverter {
         return dNum;
     }
     binaryToHex(){
-        
+        let bNum = '';
+        let hexNum = '';
+
+        const hexMap = new Map([
+            ['0', '0'],
+            ['1', '1'],
+            ['10', '2'],
+            ['11', '3'],
+            ['100', '4'],
+            ['101', '5'],
+            ['110', '6'],
+            ['111', '7'],
+            ['1000', '8'],
+            ['1001', '9'],
+            ['1010', 'A'],
+            ['1011', 'B'],
+            ['1100', 'C'],
+            ['1101', 'D'],
+            ['1110', 'E'],
+            ['1111', 'F'],
+        ]);
+
+        if(this.leftBaseValue === 'binary'){
+            bNum = this.inputLeft;
+        }
+        else{
+            bNum = this.inputRight;
+        }
+
+        let i = bNum.length - 1;
+        let nibble = '';
+        while(i >= 0) {
+            nibble = bNum[i] + nibble;
+            if(i === 0){
+                if(nibble.replace(/^0+/, '') !== ''){
+                hexNum = hexMap.get(nibble.replace(/^0+/, '')) + hexNum;
+                }
+            }
+            else if(nibble.length === 4){
+                if(nibble.replace(/^0+(?!$)/, '') !== ''){
+                hexNum = hexMap.get(nibble.replace(/^0+(?!$)/, '')) + hexNum;
+                }
+                nibble = '';
+            }
+            i--;
+        }
+        return hexNum.replace(/^0+/, '');
     }
     decimalToBinary(){
         let bNum = '';
