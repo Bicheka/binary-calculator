@@ -1,3 +1,4 @@
+// Make sure input is only 0s and 1s and recalculates on every change
 function onOperandChange(){
     const binaryInputs = document.querySelectorAll('.operand');
 
@@ -133,5 +134,66 @@ function swapValues(x, y){
     return [x, y];
 }
 
+// Calculate when operator changes eg from '+' tp '-'
 document.getElementById('operation-selector').addEventListener('change', calculateBinary);
+
 onOperandChange();
+
+
+// Converter Logic
+class BaseConverter {
+    leftBase;
+    rightBase;
+    leftBaseValue = '';
+    rightBaseValue = '';
+
+    constructor(){
+        this.leftBase = document.getElementById('base-left');
+        this.rightBase = document.getElementById('base-right');
+
+        this.leftBaseValue = this.leftBase.value;
+        this.rightBaseValue = this.rightBase.value;
+    }
+
+    swap(){
+        let temp = this.leftBaseValue;
+        this.leftBase.value = this.rightBaseValue;
+        this.rightBase.value = temp;
+        this.leftBaseValue = this.leftBase.value;
+        this.rightBaseValue = this.rightBase.value;
+    }
+    updateValues(base, value){
+        if(base === 'left'){
+            this.leftBaseValue = value;
+        }
+        else if(base === 'right'){
+            this.rightBaseValue = value;
+        }
+    }
+}
+
+// swap the bases to be converted if selected the same one
+function swapBaseOnEquals(){
+    const baseLeft = document.getElementById('base-left');
+    const baseRight = document.getElementById('base-right');
+    const converter = new BaseConverter();
+
+    baseLeft.addEventListener('change', () => {
+        if(baseLeft.value === baseRight.value){
+            converter.swap();
+        }
+        else{
+            converter.updateValues('left', baseLeft.value);
+        }
+    });
+    baseRight.addEventListener('change', () => {
+        if(baseLeft.value === baseRight.value){
+            converter.swap();
+        }
+        else{
+            converter.updateValues('right', baseRight.value);
+        }
+    });
+
+}
+swapBaseOnEquals();
