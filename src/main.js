@@ -147,12 +147,28 @@ class BaseConverter {
     leftBaseValue = '';
     rightBaseValue = '';
 
+    inputLeft;
+    inputRight;
+
     constructor(){
         this.leftBase = document.getElementById('base-left');
         this.rightBase = document.getElementById('base-right');
 
         this.leftBaseValue = this.leftBase.value;
         this.rightBaseValue = this.rightBase.value;
+
+        const leftInput = document.getElementById('input-left');
+        const rightInput = document.getElementById('input-right');
+        leftInput.addEventListener('input', () => {
+            this.inputLeft = leftInput.value;
+            if(this.leftBaseValue === 'binary' & this.rightBaseValue === 'decimal'){
+                rightInput.value = this.binaryToDecimal();
+            }
+            else if(this.leftBaseValue === 'decimal' & this.rightBaseValue === 'binary'){
+                rightInput.value = this.decimalToBinary();
+            }
+        });
+        rightInput.addEventListener('input', () => {this.inputRight = rightInput.value});
     }
 
     swap(){
@@ -179,6 +195,60 @@ class BaseConverter {
             this.rightBaseValue = value;
         }
     }
+
+    binaryToDecimal(){
+        let bNum = '';
+        let dNum = 0;
+        if(this.leftBaseValue === 'binary'){
+            bNum = this.inputLeft;
+        }
+        else{
+            bNum = this.inputRight;
+        }
+        let exp = 0;
+        for(let i = bNum.length-1; i >= 0; i--){
+            if(bNum[i] === '1'){
+                dNum += Math.pow(2, exp);
+            }
+            exp++;
+        }
+        return dNum;
+    }
+    binaryToHex(){
+        
+    }
+    decimalToBinary(){
+        let bNum = '';
+        let dNum;
+
+        if(this.leftBaseValue === 'decimal'){
+            dNum = +this.inputLeft;
+        }
+        else{
+            dNum = +this.inputRight;
+        }
+        while(dNum !== 0){
+            let remainder = dNum % 2;
+            if(remainder === 1){
+                bNum = 1 + bNum;
+            }
+            else{
+                bNum = 0 + bNum;
+            }
+            dNum = Math.floor(dNum / 2);
+        }
+        return bNum;
+    }
+    decimalToHex(){
+
+    }
+    hexToBinary(){
+
+    }
+    hexToDecimal(){
+
+    }
+    
 }
 
 // swap the bases to be converted if selected the same one
