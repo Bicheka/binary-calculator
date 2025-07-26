@@ -166,7 +166,7 @@ export class BaseConverter {
         return hexNum.replace(/^0+/, "");
     }
     decimalToBinary() {
-        let bNum = "";
+        let bNum = '';
         let dNum;
 
         if (this.leftBaseSelector.value === "decimal") {
@@ -185,7 +185,43 @@ export class BaseConverter {
         }
         return bNum;
     }
-    decimalToHex() {}
+    decimalToHex() {
+        let hexNum = '';
+        let dNum;
+        const hexMap = new Map([
+            ["0", "0"],
+            ["1", "1"],
+            ["2", "2"],
+            ["3", "3"],
+            ["4", "4"],
+            ["5", "5"],
+            ["6", "6"],
+            ["7", "7"],
+            ["8", "8"],
+            ["9", "9"],
+            ["10", "A"],
+            ["11", "B"],
+            ["12", "C"],
+            ["13", "D"],
+            ["14", "E"],
+            ["15", "F"],
+        ]);
+
+        if (this.leftBaseSelector.value === "decimal") {
+            dNum = +this.leftInput.value;
+        } else {
+            dNum = +this.rightInput.value;
+        }
+
+        while (dNum !== 0) {
+            let remainder = dNum % 16;
+            hexNum = hexMap.get(remainder.toString()) + hexNum;
+            console.log[hexNum];
+            dNum = Math.floor(dNum / 16);
+        }
+
+        return hexNum;
+    }
     hexToBinary() {}
     hexToDecimal() {}
 
