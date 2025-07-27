@@ -49,6 +49,8 @@ export class BaseConverter {
         const otherSelector =
             side === "left" ? this.rightBaseSelector : this.leftBaseSelector;
 
+        const input = side === "left" ? this.leftInput : this.rightInput;
+
         selector.addEventListener("change", () => {
             // If selected base equals the other one, swap
             if (selector.value === otherSelector.value) {
@@ -56,9 +58,7 @@ export class BaseConverter {
                 this.updateCurrentValuesState();
             } else {
                 this.updateCurrentValuesState();
-
-                this.leftInput.value = "";
-                this.rightInput.value = "";
+                this.convert(input, otherSelector.value, selector.value);
             }
         });
     }
@@ -121,7 +121,7 @@ export class BaseConverter {
         let bNum = "";
         let hexNum = "";
 
-        const hexMap = new Map([
+        const binaryHexMap = new Map([
             ["0", "0"],
             ["1", "1"],
             ["10", "2"],
@@ -152,12 +152,14 @@ export class BaseConverter {
             nibble = bNum[i] + nibble;
             if (i === 0) {
                 if (nibble.replace(/^0+/, "") !== "") {
-                    hexNum = hexMap.get(nibble.replace(/^0+/, "")) + hexNum;
+                    hexNum =
+                        binaryHexMap.get(nibble.replace(/^0+/, "")) + hexNum;
                 }
             } else if (nibble.length === 4) {
                 if (nibble.replace(/^0+(?!$)/, "") !== "") {
                     hexNum =
-                        hexMap.get(nibble.replace(/^0+(?!$)/, "")) + hexNum;
+                        binaryHexMap.get(nibble.replace(/^0+(?!$)/, "")) +
+                        hexNum;
                 }
                 nibble = "";
             }
@@ -166,7 +168,7 @@ export class BaseConverter {
         return hexNum.replace(/^0+/, "");
     }
     decimalToBinary() {
-        let bNum = '';
+        let bNum = "";
         let dNum;
 
         if (this.leftBaseSelector.value === "decimal") {
@@ -186,9 +188,9 @@ export class BaseConverter {
         return bNum;
     }
     decimalToHex() {
-        let hexNum = '';
+        let hexNum = "";
         let dNum;
-        const hexMap = new Map([
+        const decimalHexMap = new Map([
             ["0", "0"],
             ["1", "1"],
             ["2", "2"],
@@ -215,15 +217,87 @@ export class BaseConverter {
 
         while (dNum !== 0) {
             let remainder = dNum % 16;
-            hexNum = hexMap.get(remainder.toString()) + hexNum;
+            hexNum = decimalHexMap.get(remainder.toString()) + hexNum;
             console.log[hexNum];
             dNum = Math.floor(dNum / 16);
         }
 
         return hexNum;
     }
-    hexToBinary() {}
-    hexToDecimal() {}
+    hexToBinary() {
+        let bNum = "";
+        let hexNum;
+        const hexBinaryMap = new Map([
+            ["0", "0000"],
+            ["1", "0001"],
+            ["2", "0010"],
+            ["3", "0011"],
+            ["4", "0100"],
+            ["5", "0101"],
+            ["6", "0110"],
+            ["7", "0111"],
+            ["8", "1000"],
+            ["9", "1001"],
+            ["A", "1010"],
+            ["B", "1011"],
+            ["C", "1100"],
+            ["D", "1101"],
+            ["E", "1110"],
+            ["F", "1111"],
+        ]);
+
+        if (this.leftBaseSelector.value === "hex") {
+            hexNum = this.leftInput.value;
+        } else {
+            hexNum = this.rightInput.value;
+        }
+
+        // reverse hex num
+        hexNum = hexNum.split("").reverse().join("");
+
+        for (const char of hexNum) {
+            bNum = hexBinaryMap.get(char) + bNum;
+        }
+        return bNum;
+    }
+    hexToDecimal() {
+        let dNum = 0n;
+        let hexNum;
+        const hexDecimalMap = new Map([
+            ["0", 0],
+            ["1", 1],
+            ["2", 2],
+            ["3", 3],
+            ["4", 4],
+            ["5", 5],
+            ["6", 6],
+            ["7", 7],
+            ["8", 8],
+            ["9", 9],
+            ["A", 10],
+            ["B", 11],
+            ["C", 12],
+            ["D", 13],
+            ["E", 14],
+            ["F", 15],
+        ]);
+        if (this.leftBaseSelector.value === "hex") {
+            hexNum = this.leftInput.value.toUpperCase();
+        } else {
+            hexNum = this.rightInput.value.toUpperCase();
+        }
+
+        for (let i = 0; i < hexNum.length; i++) {
+            const value = hexDecimalMap.get(hexNum.charAt(i));
+            if (value === undefined)
+                throw new Error("Invalid hex digit: " + hexNum.charAt(i));
+            dNum =
+                BigInt(dNum) +
+                BigInt(value) * 16n ** BigInt(hexNum.length - 1 - i);
+        }
+
+        return dNum; // avoid scientific notation
+    }
 
     swap() {
         let temp = this.currentLeftSelectorValue;
