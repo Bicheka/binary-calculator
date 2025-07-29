@@ -4,8 +4,8 @@
     box-sizing: border-box;
 }
 h1{
-    padding: 1rem 2rem;
-    padding-left: min(1rem, 1%);
+    width: clamp(300px, 87%, 1200px);
+    margin: 1rem auto;
 }
 body {
     font-family: sans-serif;
@@ -30,6 +30,7 @@ input{
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    font-size: 1rem;
 }
 input:focus{
     outline: 1px solid rgb(71, 71, 71);
