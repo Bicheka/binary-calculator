@@ -30,7 +30,7 @@ export class Calculator {
     calculate() {
         switch (this.operator.value) {
             case "+":
-                this.result.textContent = this.add();
+                this.result.textContent = this.add(this.firstOperand.value, this.secondOperand.value);
                 break;
             case "-":
                 this.result.textContent = this.substract();
@@ -46,9 +46,7 @@ export class Calculator {
         }
     }
 
-    add() {
-        let operand1 = this.firstOperand.value;
-        let operand2 = this.secondOperand.value;
+    add(operand1, operand2) {
         let carry = 0;
         let result = "";
         let i = operand1.length - 1;
