@@ -3,9 +3,19 @@
     padding: 0;
     box-sizing: border-box;
 }
-h1{
+header{
+    display: flex;
+    align-items: center;
     width: clamp(300px, 87%, 1200px);
-    margin: 1rem auto;
+    margin: 5vh auto 0 auto;
+    gap: min(2rem, 2vw);
+}
+header img{
+    width: 96px;
+    border-radius: 10px;
+}
+header h1{
+    font-size: 3rem;
 }
 body {
     font-family: sans-serif;
