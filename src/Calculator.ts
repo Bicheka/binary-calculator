@@ -51,7 +51,7 @@ export class Calculator {
             default:
                 break;
         }
-        this.result.textContent = result.replace(/^0+/, "") || "0";;
+        this.result.textContent = result.replace(/^0+/, "") || "0";
     }
 
     add(operand1, operand2) {
@@ -116,6 +116,7 @@ export class Calculator {
             i--;
             j--;
         }
+        result = result.replace(/^0+/, "") || "0";
         if (is_negative) {
             result = "-" + result;
         }
