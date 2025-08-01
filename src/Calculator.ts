@@ -3,12 +3,14 @@ export class Calculator {
     firstOperand;
     secondOperand;
     result;
+    placeholder;
     constructor() {
         this.operator = document.getElementById("operation-selector");
         this.firstOperand = document.getElementById("first-operand");
         this.secondOperand = document.getElementById("second-operand");
         this.result = document.getElementById("calculation-result");
-
+        this.placeholder = this.secondOperand.placeholder;
+        this.operator.value = "+";
         this.setupEventListeners();
     }
 
@@ -29,6 +31,17 @@ export class Calculator {
 
     calculate() {
         let result;
+
+        // Handle placeholder only for division
+        if (this.operator.value === "/") {
+            if (this.secondOperand.value === "") {
+                this.secondOperand.placeholder = "1";
+            }
+        } else {
+            // Restore original placeholder for non-division ops
+            this.secondOperand.placeholder = this.placeholder;
+        }
+
         switch (this.operator.value) {
             case "+":
                 result = this.add(
@@ -46,8 +59,7 @@ export class Calculator {
                 );
                 break;
             case "/":
-                result = this.divide();
-                break;
+                return this.result.textContent = this.divide();
             default:
                 break;
         }
@@ -71,57 +83,54 @@ export class Calculator {
         return result;
     }
     substract() {
-        let operand1 = this.firstOperand.value;
-        let operand2 = this.secondOperand.value;
-        let carry = 0;
-        let result = "";
+        let a = this.firstOperand.value;
+        let b = this.secondOperand.value;
         let is_negative = false;
-
-        if (operand1 === operand2) return (result = "0");
-
-        // invert operand values if operand1 is less than operand2
-        if (!this.isBinaryGreater(operand1, operand2)) {
-            [operand1, operand2] = this.swapValues(operand1, operand2);
+    
+        if (a === b) return "0";
+    
+        if (!this.isBinaryGreater(a, b)) {
+            [a, b] = this.swapValues(a, b);
             is_negative = true;
         }
-
-        let i = operand1.length - 1;
-        let j = operand2.length - 1;
-
-        while (i >= 0 || j >= 0 || carry) {
-            const bitA = i >= 0 ? +operand1[i] : 0;
-            const bitB = j >= 0 ? +operand2[j] : 0;
-            let sub;
-            if (bitA > bitB) {
-                if (carry === 1) {
-                    sub = 0;
-                    carry = 0;
-                } else {
-                    sub = 1;
-                }
-            } else if (bitA < bitB) {
-                if (carry === 1) {
-                    sub = 0;
-                } else {
-                    sub = 1;
-                    carry = 1;
-                }
-            } else {
-                if (carry === 1) {
-                    sub = 1;
-                } else sub = 0;
-            }
-            result = sub + result;
-
-            i--;
-            j--;
-        }
-        result = result.replace(/^0+/, "") || "0";
-        if (is_negative) {
-            result = "-" + result;
-        }
-        return result;
+    
+        let result = this.subBinary(a, b);
+        return is_negative ? "-" + result : result;
     }
+
+    subBinary(a, b) {
+        // Ensure a >= b
+        if (!this.isBinaryGreater(a, b) && a !== b) {
+            [a, b] = this.swapValues(a, b);
+        }
+    
+        let carry = 0;
+        let result = "";
+    
+        let i = a.length - 1;
+        let j = b.length - 1;
+    
+        while (i >= 0 || j >= 0) {
+            let bitA = i >= 0 ? +a[i--] : 0;
+            let bitB = j >= 0 ? +b[j--] : 0;
+    
+            let diff = bitA - bitB - carry;
+    
+            if (diff === -1) {
+                carry = 1;
+                result = "1" + result;
+            } else if (diff === -2) {
+                carry = 1;
+                result = "0" + result;
+            } else {
+                carry = 0;
+                result = diff + result;
+            }
+        }
+    
+        return result.replace(/^0+/, "") || "0";
+    }
+    
 
     multiply(operand1: string, operand2: string) {
         let result = "";
@@ -146,7 +155,57 @@ export class Calculator {
         }
         return result;
     }
-    divide() {}
+    divide() {
+        const rawDividend = this.firstOperand.value;
+        const rawDivisor = this.secondOperand.value;
+    
+        // Early return for empty divisor field
+        if (rawDivisor === "") {
+            this.secondOperand.placeholder = "1";
+            return rawDividend.replace(/^0+/, "") || "0";
+        }
+    
+        // Handle division by zero BEFORE stripping leading zeros
+        if (rawDivisor.replace(/^0+/, "") === "") {
+            return "You cannot divide by zero";
+        }
+    
+        let dividend = rawDividend.replace(/^0+/, "") || "0";
+        let divisor = rawDivisor.replace(/^0+/, "") || "0";
+    
+        // Handle zero dividend
+        if (dividend === "0") return "0 R: 0";
+    
+        // Handle dividend < divisor
+        if (!this.isBinaryGreater(dividend, divisor) && dividend !== divisor) {
+            return `0 R: ${dividend}`;
+        }
+    
+        // Handle dividend == divisor
+        if (dividend === divisor) return "1 R: 0";
+    
+        let quotient = "0";
+        let remainder = "";
+    
+        for (let i = 0; i < dividend.length; i++) {
+            remainder += dividend[i];
+            remainder = remainder.replace(/^0+/, "") || "0";
+    
+            if (this.isBinaryGreater(remainder, divisor) || remainder === divisor) {
+                remainder = this.subBinary(remainder, divisor);
+                quotient += "1";
+            } else {
+                quotient += "0";
+            }
+        }
+    
+        quotient = quotient.replace(/^0+/, "") || "0";
+        remainder = remainder.replace(/^0+/, "") || "0";
+    
+        return `${quotient} R: ${remainder}`;
+    }
+    
+    
 
     isBinaryGreater(a, b) {
         // Remove leading zeros
