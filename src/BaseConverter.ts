@@ -227,6 +227,7 @@ export class BaseConverter {
     hexToBinary() {
         let bNum = "";
         let hexNum;
+        let left = true;
         const hexBinaryMap = new Map([
             ["0", "0000"],
             ["1", "0001"],
@@ -248,15 +249,29 @@ export class BaseConverter {
 
         if (this.leftBaseSelector.value === "hex") {
             hexNum = this.leftInput.value;
+            this.leftInput.style.outline = '';
         } else {
+            this.rightInput.style.outline = '';
             hexNum = this.rightInput.value;
+            left = false;
         }
 
         // reverse hex num
         hexNum = hexNum.split("").reverse().join("");
 
         for (const char of hexNum) {
-            bNum = hexBinaryMap.get(char) + bNum;
+            const binary = hexBinaryMap.get(char.toUpperCase());
+            if (binary === undefined) {
+                if (left) {
+                    this.leftInput.style.outline = "2px solid red";
+                } else {
+                    this.rightInput.style.outline = "2px solid red";
+                }
+                bNum = "Invalid Input";
+                break; // stop processing further chars
+            } else {
+                bNum = binary + bNum;
+            }
         }
         return bNum;
     }
