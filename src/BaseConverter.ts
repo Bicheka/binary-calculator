@@ -67,17 +67,25 @@ export class BaseConverter {
         const handleInput = (fromInput, toInput, fromBaseKey, toBaseKey) => {
             fromInput.addEventListener("input", () => {
                 if (this.isUpdating) return;
-                this.updateCurrentValuesState();
-
+    
                 const fromBase = this[fromBaseKey];
                 const toBase = this[toBaseKey];
-
+    
+                // Enforce valid characters for the source base
+                if (fromBase === "binary") {
+                    fromInput.value = fromInput.value.replace(/[^01]/gi, "");
+                } else if (fromBase === "decimal") {
+                    fromInput.value = fromInput.value.replace(/[^0-9]/g, "");
+                } else if (fromBase === "hex") {
+                    fromInput.value = fromInput.value.replace(/[^0-9a-fA-F]/g, "");
+                }
+    
                 this.isUpdating = true;
                 this.convert(toInput, fromBase, toBase);
                 this.isUpdating = false;
             });
         };
-
+    
         handleInput(
             this.leftInput,
             this.rightInput,
@@ -91,6 +99,7 @@ export class BaseConverter {
             "currentLeftSelectorValue"
         );
     }
+    
 
     convert(toInput, fromBase, toBase) {
         const key = `${fromBase}->${toBase}`;
@@ -227,7 +236,6 @@ export class BaseConverter {
     hexToBinary() {
         let bNum = "";
         let hexNum;
-        let left = true;
         const hexBinaryMap = new Map([
             ["0", "0000"],
             ["1", "0001"],
@@ -253,7 +261,6 @@ export class BaseConverter {
         } else {
             this.rightInput.style.outline = '';
             hexNum = this.rightInput.value;
-            left = false;
         }
 
         // reverse hex num
@@ -261,17 +268,7 @@ export class BaseConverter {
 
         for (const char of hexNum) {
             const binary = hexBinaryMap.get(char.toUpperCase());
-            if (binary === undefined) {
-                if (left) {
-                    this.leftInput.style.outline = "2px solid red";
-                } else {
-                    this.rightInput.style.outline = "2px solid red";
-                }
-                bNum = "Invalid Input";
-                break; // stop processing further chars
-            } else {
-                bNum = binary + bNum;
-            }
+            bNum = binary + bNum;
         }
         return bNum;
     }
