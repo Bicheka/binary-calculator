@@ -23,12 +23,21 @@ header {
 header img {
     width: 96px;
     border-radius: 10px;
+    /* eliminates thin light line around the image caused by anti-aliasing or subpixel rendering on small screens */
+    image-rendering: pixelated;
+    transform: translateZ(0);
 }
 
 header h1 {
     font-size: 4rem;
     font-family: "VT323", monospace;
     font-weight: 400;
+}
+
+@media screen and (max-width: 900px) {
+    header h1{
+        font-size: 2.6rem;
+    }
 }
 
 /* Main container */
